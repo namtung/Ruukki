@@ -1,14 +1,16 @@
-const combineLoaders = require('webpack-combine-loaders')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
-const path = require('path');
 
 module.exports = {
+    entry: ['babel-polyfill', './src/index.js'],
+    devServer: {
+        watchOptions: {
+            ignored: /node_modules/
+        }
+    },
     module: {
         rules: [
             {
-                test: /\.js$/,
+                test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 use: {
                     loader: "babel-loader"
@@ -24,54 +26,34 @@ module.exports = {
                     }
                 ]
             }, {
-                exclude: /node_modules/,
                 test: /\.(eot|svg|ttf|woff|woff2)$/,
                 use: [
                     {
                         loader: 'file-loader',
                         options: {
+                            useRelativePath: true,
                             name: '[name].[ext]',
-                            outputPath: '/fonts/'
                         }
                     }
                 ]
             }, {
-                test: /\.(png|jpg|gif)$/,
+                test: /\.(png|jpg|gif|jpeg)$/,
                 use: [
                     {
                         loader: 'file-loader',
                         options: {
                             useRelativePath: false,
-                            name: '[hash].[ext]',
+                            name: 'img/[hash].[ext]',
                         }
                     }
                 ]
             }, {
                 test: /\.css$/,
-                loader: ExtractTextPlugin.extract(
-                    combineLoaders([
-                        {
-                            loader: 'css-loader',
-                            query: {
-                                modules: true,
-                                localIdentName: '[name]__[local]___[hash:base64:5]'
-                            }
-                        }
-                    ])
-                )
+                use: ['style-loader', 'css-loader']
             }
         ]
     },
-    devServer: {
-        contentBase: path.join(__dirname, "src"),
-        inline: true,
-        port: 3300,
-        historyApiFallback: true
-    },
-    entry: ['babel-polyfill', './src/index.js'],
     plugins: [
-        new HtmlWebpackPlugin({template: "./src/index.html", filename: "./index.html"}),
-        new ExtractTextPlugin('css/styles.css'),
-        new CopyWebpackPlugin([{ from: 'src/css', to: 'css' },{ from: 'src/img', to: 'img' }])
+        new HtmlWebpackPlugin({template: "./src/index.html", filename: "./index.html"})
     ]
 }

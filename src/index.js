@@ -8,6 +8,7 @@ import App from './components/App.js'
 // import ReduxPromise from 'redux-promise'
 // const middlewares = [ReduxPromise]
 // const store = createStore(reducers, applyMiddleware(...middlewares))
+import './css/styles.css'
 
 ReactDOM.render(
     <BrowserRouter>
